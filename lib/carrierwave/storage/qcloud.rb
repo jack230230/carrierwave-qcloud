@@ -17,7 +17,6 @@ module CarrierWave
     # wiki: https://github.com/richardkmichael/carrierwave-activerecord/wiki/Howto:-Adding-a-new-storage-engine
     # rdoc: http://www.rubydoc.info/gems/carrierwave/CarrierWave/Storage/Abstract
     class Qcloud < Abstract
-      attr_accessor :url
 
       # config qcloud sdk by getting configuration from uplander
       def self.configure_qcloud_sdk(uploader)
@@ -59,6 +58,7 @@ module CarrierWave
       class File < CarrierWave::SanitizedFile
         attr_accessor :qcloud_info
         attr_accessor :path
+        attr_accessor :url
 
         # store/upload file to qcloud
         def store
