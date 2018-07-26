@@ -17,6 +17,8 @@ module CarrierWave
     # wiki: https://github.com/richardkmichael/carrierwave-activerecord/wiki/Howto:-Adding-a-new-storage-engine
     # rdoc: http://www.rubydoc.info/gems/carrierwave/CarrierWave/Storage/Abstract
     class Qcloud < Abstract
+      attr_accessor :url
+
       # config qcloud sdk by getting configuration from uplander
       def self.configure_qcloud_sdk(uploader)
         QcloudCos.configure do |config|
@@ -24,7 +26,7 @@ module CarrierWave
           config.secret_id  = uploader.qcloud_secret_id
           config.secret_key = uploader.qcloud_secret_key
           config.bucket     = uploader.qcloud_bucket
-          config.endpoint   = "http://web.file.myqcloud.com/files/v1/"
+          config.region     = uploader.qcloud_region
         end
       end
 
@@ -54,7 +56,6 @@ module CarrierWave
       end
 
       # store and retrieve file using qcloud-cos-sdk
-      # sdk ref: https://github.com/zlx/qcloud-cos-sdk/blob/master/wiki/get_started.md#api%E8%AF%A6%E7%BB%86%E8%AF%B4%E6%98%8E
       class File < CarrierWave::SanitizedFile
         attr_accessor :qcloud_info
         attr_accessor :path
@@ -62,38 +63,12 @@ module CarrierWave
         # store/upload file to qcloud
         def store
           result = QcloudCos.upload(path, file.to_file)
-          # e.g.: {"code"=>0, "message"=>"SUCCESS", "data"=>{"access_url"=>"http://#{bucket}-#{app_id}.file.myqcloud.com/uploads/user/avatar/5/81b97fdf4f5b4353916c0f40878258bc.jpg", "resource_path"=>"/uploads/user/avatar/5/81b97fdf4f5b4353916c0f40878258bc.jpg", "source_url"=>"http://#{bucket}-#{app_id}.cos.myqcloud.com/uploads/user/avatar/5/81b97fdf4f5b4353916c0f40878258bc.jpg", "url"=>"http://web.file.myqcloud.com/files/v1/uploads/user/avatar/5/81b97fdf4f5b4353916c0f40878258bc.jpg"}}
 
-          if result['message'] == 'SUCCESS'
-            self.qcloud_info = result['data']
+          if result != nil
+            self.url = result
           end
         end
 
-        # file access url on qcloud
-        def url
-          qcloud_info['access_url']
-        end
-
-        # get file stat on qcloud
-        def stat
-          result = QcloudCos.stat(path)
-          if result['message'] == 'SUCCESS'
-            self.qcloud_info = result['data']
-          end
-        end
-
-        # delete file on qcloud
-        def delete
-          result = QcloudCos.delete(path)
-          result['message'] == 'SUCCESS'
-          # TODO: delete parent dir if it's empty
-          # ref: https://github.com/carrierwaveuploader/carrierwave/wiki/How-to%3A-Make-a-fast-lookup-able-storage-directory-structure
-        end
-
-        # TODO: retrieve/download file from qcloud
-        def retrieve
-          # TODO
-        end
       end
 
     end

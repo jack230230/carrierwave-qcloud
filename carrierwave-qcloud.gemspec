@@ -6,12 +6,12 @@ require 'carrierwave/qcloud/version'
 Gem::Specification.new do |spec|
   spec.name          = "carrierwave-qcloud"
   spec.version       = Carrierwave::Qcloud::VERSION
-  spec.authors       = ["RainChen"]
-  spec.email         = ["hirainchen@gmail.com"]
+  spec.authors       = ["wzw"]
+  spec.email         = ["jack230230@gmail.com"]
 
   spec.summary       = %q{Qcloud COS Storage support for CarrierWave}
   spec.description   = %q{Qcloud COS Storage support for CarrierWave}
-  spec.homepage      = "https://github.com/rainchen/carrierwave-qcloud"
+  spec.homepage      = "https://github.com/jack230230/carrierwave-qcloud"
 
   spec.files         = `git ls-files -z`.split("\x0").reject { |f| f.match(%r{^(test|spec|features)/}) }
   spec.bindir        = "exe"
@@ -23,5 +23,4 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "rspec", "~> 3.0"
 
   spec.add_dependency "carrierwave", ">= 0.10.0"
-  spec.add_dependency "qcloud_cos", ">= 0.4.2"
 end
