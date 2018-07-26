@@ -49,7 +49,6 @@ module CarrierWave
           file_path = uploader.store_path(identifier)
           File.new(nil).tap do |file|
             file.path = file_path
-            file.stat
           end
         end
       end
